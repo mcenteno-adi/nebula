@@ -296,7 +296,11 @@ class CloudsmithDownloader:
                 f"version:{package_version.rstrip('/')}* AND name:make_parameters.txt"
             )
         elif repo == self.LINUX_RPI_REPO:
-            query = f"version:{package_version.rstrip('/')}* AND name:rpi_archives_properties.txt"
+            if package_version.rstrip('/') == 'linux_rpi/v6.12.y-2026r1':
+                query = f"version:{package_version.rstrip('/')}* AND name:upload_to_cloudsmith.log"
+            else:
+                print(package_version.rstrip('/'))
+                query = f"version:{package_version.rstrip('/')}* AND name:rpi_archives_properties.txt"
         else:
             log.info(f"unknown cloudsmith repo: {repo}, using generic query")
             query = f"version:{package_version.rstrip('/')}* "
@@ -562,7 +566,7 @@ class CloudsmithDownloader:
         log.info("Getting RPi files from Cloudsmith")
 
         pkg_version = (
-            version.rstrip("/") + "/" if version else f"linux_rpi/releases/{branch}/"
+            version.rstrip("/") + "/" if version else f"linux_rpi/{branch}/"
         )
         version_prefix = self._get_latest_version_prefix(
             pkg_version,
